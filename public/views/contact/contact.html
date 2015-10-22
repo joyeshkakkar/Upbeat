@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Contact Us</title>
+</head>
+<body>
+    <div class="container" id="contactContainer">
+        <div class="row col-md-12">
+            <div class="col-md-6 col-md-offset-3">
+                <p><h3>Contact Us</h3></p>
+                <div>
+                    <p><h5> If you have any suggestions, please let us know by sending an email.</h5></p><br />
+                </div>
+                <form class="form-horizontal" ng-submit="mailMe(sender)" name="myform">
+                    <fieldset>
+                        <div class="form-group" ng-class="{'has-error': myform.username.$invalid}">
+                            <label for="username" class="margin col-lg-3 control-label">Your Name&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="sender.username" id="username" placeholder="Your Name"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-class="{'has-error': myform.email.$invalid}">
+                            <label for="email" class="margin col-lg-3 control-label">Your Email&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="email" ng-model="sender.email" id="email" placeholder="Your Email"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="margin col-lg-3 control-label">Subject&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="sender.subject" id="subject" placeholder="Subject"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="margin col-lg-3 control-label">Message&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <textarea class="form-control" ng-model="sender.message" name="message" rows="5" data-rule="required" data-msg="Message" placeholder="Message"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-3 col-sm-6 center-align">
+                            <button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="myForm.$invalid">
+                                Send Mail
+                            </button>
+                        </div>
+                        <div class="col-sm-offset-3 col-sm-6 center-align">
+                            <p ng-show="showMailSentMsg"><h3>{{showMailSentMsg}}</h3></p>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

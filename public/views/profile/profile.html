@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <div class="container" id="profileContainer">
+        <p class=" pull-left">
+        <h3 style="text-align: left">Welcome {{currentUser.firstName}}</h3></p>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-8">
+                    <p class="pull-left form-control" style="background: #CFCFCF; ">About me</p>
+
+                    <div class="col-md-2">
+                        <p>Basic Info</p>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="col-md-4">
+                            <p>First Name</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{currentUser.firstName}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Last Name</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{currentUser.lastName}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Role</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{currentUser.role}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Email</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{currentUser.email}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Phone</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{currentUser.phone}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-8">
+                    <p class="pull-left form-control" style="background: #CFCFCF; ">Favorites</p><br />
+
+                    <div class="row">
+                        <tabset>
+                            <tab heading="Favorite Tracks">
+                                <div class="container">
+                                    <div class="col-md-8" ng-show="favTracks.length <= 0">
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1 center">
+                                                <p><h5>You don't have any favorite tracks. Add some through <a href="/#/search">Search</a> page.</h5></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mar-top15 col-md-8">
+                                        <table class="table table-striped" ng-show="favTracks.length > 0">
+                                            <tbody>
+                                                <tr ng-repeat="track in favTracks">
+                                                    <td>{{track.name}}</td>
+                                                    <td class="pull-right col-md-offset-1">
+                                                        <a href="{{track.preview_url}}" tooltip-placement="bottom" tooltip="Listen preview." target="_blank">
+                                                            <span class="glyphicon glyphicon-volume-up"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="{{track.external_url}}" tooltip-placement="bottom" tooltip="Listen in spotify." target="_blank">
+                                                            <span class="glyphicon glyphicon-play"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="" tooltip-placement="bottom" tooltip="Remove from favorites." ng-click="removeTrackFromFav(track)">
+                                                            <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="" tooltip-placement="bottom" tooltip="View Details." ng-click="viewTrackData(track)">
+                                                            <span style="color:darkorange;" class="glyphicon glyphicon-eye-open"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="" tooltip-placement="bottom" tooltip="Add to playlists." ng-click="addTrackToPlaylist(track)" ng-show="currentUser">
+                                                            <span style="color:green;" class="glyphicon glyphicon-plus"></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                            <tab heading="Favorite Albums">
+                                <!--Album Table-->
+                                <div class="container">
+                                    <div class="col-md-8" ng-show="favAlbums.length <= 0">
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1 center">
+                                                <p><h5>You don't have any favorite albums. Add some through <a href="/#/search">Search</a> page.</h5></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mar-top15 col-md-8">
+                                        <table class="table table-striped" ng-show="favAlbums.length > 0">
+                                            <tbody>
+                                                <tr ng-repeat="album in favAlbums">
+                                                    <td>{{album.name}}</td>
+                                                    <td class="pull-right">
+                                                        <a href="" tooltip-placement="bottom" tooltip="Remove from favorites." ng-click="removeAlbumFromFav(album)">
+                                                            <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="" tooltip-placement="bottom" tooltip="View Details." ng-click="viewAlbumData(album)">
+                                                            <span style="color:darkorange;" class="glyphicon glyphicon-eye-open"></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                            <tab heading="Favorite Artists">
+                                <!--Artist Table-->
+                                <div class="container">
+                                    <div class="col-md-8" ng-show="favArtists.length <= 0">
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1 center">
+                                                <p><h5>You don't have any favorite artists. Add some through <a href="/#/search">Search</a> page.</h5></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mar-top15 col-md-8">
+                                        <table class="table table-striped" ng-show="favArtists.length > 0">
+                                            <tbody>
+                                                <tr ng-repeat="artist in favArtists">
+                                                    <td class="col-md-offset-4">{{artist.name}}</td>
+                                                    <td class=" pull-right">
+                                                        <a href="" tooltip-placement="bottom" tooltip="Remove from favorites." ng-click="removeArtistFromFav(artist)">
+                                                            <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                                        </a>
+                                                        &nbsp;
+                                                        <a href="" tooltip-placement="bottom" tooltip="View Details." ng-click="viewArtistData(artist)">
+                                                            <span style="color:darkorange;" class="glyphicon glyphicon-eye-open"></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                        </tabset>
+
+                    </div>
+
+
+
+
+
+
+                    <script type="text/ng-template" id="trackDetails.html">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Track Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" ng-show="favTrack.album.images[0].url">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <img class="poster" ng-src="{{favTrack.album.images[0].url}}" />
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favTrack.name">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Track Name:&nbsp;</label>{{favTrack.name}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favTrack.album.name">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Album:&nbsp;</label>{{favTrack.album.name}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favTrack.artists[0].name">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Artist:&nbsp;</label>{{favTrack.artists[0].name}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favTrack.popularity">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Popularity:&nbsp;</label>{{favTrack.popularity}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" ng-click="ok()">OK</button>
+                        </div>
+                    </script>
+
+
+
+                    <script type="text/ng-template" id="albumDetails.html">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Album Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" ng-show="favAlbum.images[0].url">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <img class="poster" ng-src="{{favAlbum.images[0].url}}" />
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favAlbum.name">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Album Name:&nbsp;</label>{{favAlbum.name}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favAlbum.type">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Type:&nbsp;</label>{{favAlbum.type}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" ng-click="ok()">OK</button>
+                        </div>
+                    </script>
+
+
+
+
+
+
+                    <script type="text/ng-template" id="artistDetails.html">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Artist Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" ng-show="favArtist.images[0].url">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <img class="poster" ng-src="{{favArtist.images[0].url}}" />
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favArtist.name">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Artist Name:&nbsp;</label>{{favArtist.name}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favArtist.genres[0]">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Genre:&nbsp;</label>{{favArtist.genres[0]}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favArtist.popularity">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Popularity:&nbsp;</label>{{favArtist.popularity}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="favArtist.followers.total">
+                                <div class="col-md-10 col-md-offset-1 mar-top15">
+                                    <label>Followers:&nbsp;</label>{{favArtist.followers.total}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" ng-click="ok()">OK</button>
+                        </div>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="playlistDetailsInProfiles.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Playlists</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row" ng-show="playlists.length > 0">
+                <div class="col-md-10 col-md-offset-1 mar-top15">
+                    <ul class="list-group" ng-repeat="playlist in playlists | orderBy:'addedOn'">
+                        <li class="list-group-item">
+                            <div>
+                                {{playlist.name}}
+                                <div class="pull-right col-md-offset-2">
+                                    <a href="" tooltip-placement="bottom" tooltip="Add track to this playlist." ng-click="updatePlaylistWithTrack(playlist)"
+                                       ng-hide=trackInPlaylist(playlist)>
+                                        <span style="color:blue;" class="glyphicon glyphicon-plus"></span>
+                                    </a>
+                                    <a href="" tooltip-placement="bottom" tooltip="Track is in this playlist."
+                                       ng-show=trackInPlaylist(playlist)>
+                                        <span style="color:green;" class="glyphicon glyphicon-ok"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row" ng-show="playlists.length <= 0">
+                <div class="col-md-10 col-md-offset-1 mar-top15">
+                    <label>Alas, You don't have any playlists created. Please create a playlist to add a track to it.</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+
+            <button class="btn btn-primary" ng-click="done()">Done</button>
+        </div>
+    </script>
+</body>
+</html>

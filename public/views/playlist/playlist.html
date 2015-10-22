@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Playlist</title>
+</head>
+<body>
+    <div ng-controller="PlaylistController" class="container" id="playlistContainer">
+        <h3>Playlists</h3>
+        <div class="row col-sm-12">
+            <div class="col-sm-3 col-sm-offset-1">
+                <div>
+                    <button id="addPlaylist" ng-show="currentUser"
+                            ng-click="show()" class="btn btn-primary">
+                        Create Playlist
+                    </button>
+                    <br /><br />
+                    <div collapse="isCollapsed">
+                        <input type="text" ng-model="playlistName" id="playlistName" placeholder="Playlist Name"
+                               required class="text form-control margin" /><br />
+                        <button id="save()" class="btn btn-success" ng-click="savePlaylist()">Save</button>
+                        <button id="cancel" class="btn btn-warning" ng-click="cancel()">Cancel</button><br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br /><br />
+        <div class="row col-sm-12">
+            <div class="col-sm-10 col-sm-offset-1">
+                <br />
+                <tabset>
+                    <tab heading="Your Playlists" active="true">
+                        <div class="row" ng-show="ownPlaylists.length <= 0">
+                            <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                                <h5>Alas, You don't have any playlists.</h5>
+                            </div>
+                        </div>
+                        <accordion close-others="true">
+                            <accordion-group class="text-left"
+                                             ng-repeat="playlist in ownPlaylists | orderBy:'addedOn'">
+                                <accordion-heading>
+                                    <div class="row col-sm-offset-0">
+                                        <div class="pull-left">
+                                            <b>{{playlist.name}}</b>
+                                        </div>
+                                        <div class="col-sm-offset-10">
+                                            <a href="" tooltip-placement="bottom" tooltip="Followers." ng-click="showFollowers(playlist)" ng-show="playlist.publish === true">
+                                                <span style="color:darkorchid;" class="glyphicon glyphicon-stats"></span>
+                                            </a>
+                                            &nbsp;
+                                            <a href="" tooltip-placement="bottom" tooltip="Edit Playlist Name." ng-click="editPlaylistName(playlist)">
+                                                <span style="color:coral;" class="glyphicon glyphicon-pencil"></span>
+                                            </a>
+                                            &nbsp;
+                                            <a href="" tooltip-placement="bottom" tooltip="Publish playlist." ng-click="publishPlaylist(playlist)" ng-show="playlist.publish === false">
+                                                <span style="color:forestgreen;" class="glyphicon glyphicon-eye-open"></span>
+                                            </a>
+                                            <a href="" tooltip-placement="bottom" tooltip="Unpublish playlist." ng-click="unpublishPlaylist(playlist)" ng-show="playlist.publish === true">
+                                                <span style="color:firebrick;" class="glyphicon glyphicon-eye-close"></span>
+                                            </a>
+                                            &nbsp;
+                                            <a href="" tooltip-placement="bottom" tooltip="Delete playlist." ng-click="deletePlaylist(playlist)">
+                                                <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </accordion-heading>
+                                <div class="table-responsive">
+                                    <table class="table table-striped" ng-show="playlist.tracks.length > 0">
+                                        <tbody>
+                                            <tr ng-repeat="track in playlist.tracks | orderBy:'-popularity'">
+                                                <td class="col-sm-4 col-sm-offset-1">{{track.name}}</td>
+                                                <td class="col-sm-3 col-sm-offset-1">
+                                                    <a href="{{track.preview_url}}" tooltip-placement="bottom" tooltip="Listen preview." target="_blank">
+                                                        <span class="glyphicon glyphicon-volume-up"></span>
+                                                    </a>
+                                                    &nbsp;
+                                                    <a href="{{track.external_url}}" tooltip-placement="bottom" tooltip="Listen in spotify." target="_blank">
+                                                        <span class="glyphicon glyphicon-play"></span>
+                                                    </a>
+                                                    &nbsp;
+                                                    <a href="" tooltip-placement="bottom" tooltip="Remove track from playlist." ng-click="removeTrackFromPlaylist(track, playlist)">
+                                                        <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row" ng-show="playlist.tracks.length <= 0">
+                                    <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                                        <h5>Alas, You don't have any tracks in this playlist. Add some tracks to this playlist through <a href="/#/search">Search</a> page or <a href="/#/profile">Profile</a> page.</h5>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <b>Comments:</b>
+                                    <br /><br />
+                                </div>
+                                <div class="row col-sm-12" ng-repeat="comment in playlist.comments | orderBy:'-addedOn'">
+                                    <div class="col-sm-3">
+                                        <span class="comment-name">{{comment.firstName}} {{comment.lastName}}</span>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span class="comment-date">{{ comment.addedOn | date : 'fullDate'}}</span>
+                                    </div>
+                                    <div class="col-sm-10" ng-hide="editable==true && comment._id==commentId">
+                                        <div style="word-wrap:break-word;">{{comment.commentText}}</div>
+                                        <br />
+                                    </div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+                    </tab>
+                    <tab heading="Followed Playlists">
+                        <div class="row" ng-show="followedPlaylists.length <= 0">
+                            <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                                <h5>You have not followed any playlists.</h5>
+                            </div>
+                        </div>
+                        <accordion close-others="true">
+                            <accordion-group class="text-left"
+                                             ng-repeat="followedPlaylist in followedPlaylists | orderBy:'addedOn'">
+                                <accordion-heading>
+                                    <div class="row col-sm-offset-0">
+                                        <div class="pull-left">
+                                            <b>{{followedPlaylist.name}}</b>
+                                        </div>
+                                        <div class="col-sm-offset-11">
+                                            <a href="" tooltip-placement="bottom" tooltip="Unfollow playlist." ng-click="unfollowPlaylist(followedPlaylist)">
+                                                <span style="color:forestgreen;" class="glyphicon glyphicon-thumbs-down"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </accordion-heading>
+                                <div class="table-responsive">
+                                    <table class="table table-striped" ng-show="followedPlaylist.tracks.length > 0">
+                                        <tbody>
+                                            <tr ng-repeat="track in followedPlaylist.tracks | orderBy:'-popularity'">
+                                                <td class="col-sm-4 col-sm-offset-1">{{track.name}}</td>
+                                                <td class="col-sm-4">
+                                                    <a href="{{track.preview_url}}" tooltip-placement="bottom" tooltip="Listen preview." target="_blank">
+                                                        <span class="glyphicon glyphicon-volume-up"></span>
+                                                    </a>
+                                                    &nbsp;
+                                                    <a href="{{track.external_url}}" tooltip-placement="bottom" tooltip="Listen in spotify." target="_blank">
+                                                        <span class="glyphicon glyphicon-play"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row" ng-show="followedPlaylist.tracks.length <= 0">
+                                    <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                                        <h5>Creater of this playlist has not added any tracks in it.</h5>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <b>Comments:</b>
+                                    <br /><br />
+                                </div>
+                                <div class="row col-sm-12 col-sm-offset-1">
+                                    <form class="form-horizontal col-sm-8" ng-submit="addComment(followedPlaylist,inputComment)" name="myform1">
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <div class="mar-top15 text-center">
+                                                    <div class="">
+                                                        <textarea class="form-control" style="resize:none;" ng-model="inputComment.commentText" name="commentText" rows="2"
+                                                                  data-rule="required" data-msg="Comment" placeholder="Comment"></textarea>
+                                                        <br />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                    <div class="col-sm-2">
+                                        <a href="" tooltip-placement="bottom" tooltip="Save Comment" target="_blank" ng-click="addComment(followedPlaylist,inputComment)">
+                                            <span style="color:green;" class="glyphicon glyphicon-comment"></span>
+                                        </a>
+                                        <br /><br />
+                                    </div>
+                                </div>
+                                <div class="row col-sm-12" ng-repeat="comment in followedPlaylist.comments | orderBy:'-addedOn'">
+                                    <div class="col-sm-3">
+                                        <span class="comment-name">{{comment.firstName}} {{comment.lastName}}</span>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span class="comment-date">{{ comment.addedOn | date : 'fullDate'}}</span>
+                                    </div>
+                                    <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id && editable==true && comment._id==commentId">
+                                        <a href="" tooltip-placement="bottom" tooltip="Update Comment" target="_blank" ng-click="updateComment(followedPlaylist,comment)">
+                                            <span style="color:green;" class="glyphicon glyphicon-ok"></span>
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id && editable!==true">
+                                        <a href="" tooltip-placement="bottom" tooltip="Edit Comment" target="_blank" ng-click="editComment(followedPlaylist,comment)">
+                                            <span style="color:blue;" class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id">
+                                        <a href="" tooltip-placement="bottom" tooltip="Delete Comment" target="_blank" ng-click="deleteComment(followedPlaylist,comment)">
+                                            <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                        <br />
+                                    </div>
+                                    <div class="col-sm-10" ng-hide="editable==true && comment._id==commentId">
+                                        <div style="word-wrap:break-word;">{{comment.commentText}}</div>
+                                        <br />
+                                    </div>
+                                    <div class="col-sm-10" ng-show="editable==true && comment._id==commentId">
+                                        <form class="form-horizontal" ng-submit="updateComment(followedPlaylist,comment)" name="myform1">
+                                            <fieldset>
+                                                <div class="form-group">
+                                                    <textarea class="form-control" style="resize:none;" ng-model="comment.commentText" name="commentText" rows="2"
+                                                              data-rule="required" data-msg="Comment" placeholder="Comment"></textarea>
+                                                    <br />
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                        <br />
+                                    </div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+                    </tab>
+                </tabset>
+                <br /><br />
+            </div>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-10 col-sm-offset-1">
+                <h3>Published playlists by other users</h3>
+                <div class="row" ng-show="publishedPlaylists.length <= 0">
+                    <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                        <h5>There are no playlists shared by other users.</h5>
+                    </div>
+                </div>
+                <accordion close-others="true">
+                    <accordion-group class="text-left"
+                                     ng-repeat="publishedPlaylist in publishedPlaylists | orderBy:'addedOn'">
+                        <accordion-heading>
+                            <div class="row col-sm-offset-0">
+                                <div class="pull-left">
+                                    <b>{{publishedPlaylist.name}}</b>
+                                </div>
+                                <div class="col-sm-offset-11">
+                                    <a href="" tooltip-placement="bottom" tooltip="Follow playlist." ng-click="followPlaylist(publishedPlaylist)">
+                                        <span style="color:forestgreen;" class="glyphicon glyphicon-thumbs-up"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                        <div class="table-responsive">
+                            <table class="table table-striped" ng-show="publishedPlaylist.tracks.length > 0">
+                                <tbody>
+                                    <tr ng-repeat="track in publishedPlaylist.tracks | orderBy:'-popularity'">
+                                        <td class="col-sm-4 col-sm-offset-1">{{track.name}}</td>
+                                        <td class="col-sm-3 col-sm-offset-1">
+                                            <a href="{{track.preview_url}}" tooltip-placement="bottom" tooltip="Listen preview." target="_blank">
+                                                <span class="glyphicon glyphicon-volume-up"></span>
+                                            </a>
+                                            &nbsp;
+                                            <a href="{{track.external_url}}" tooltip-placement="bottom" tooltip="Listen in spotify." target="_blank">
+                                                <span class="glyphicon glyphicon-play"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-show="publishedPlaylist.tracks.length <= 0">
+                            <div class="col-sm-10 col-sm-offset-1 mar-top15 text-center">
+                                <h5>Creater of this playlist has not added any tracks in it.</h5>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <b>Comments:</b>
+                            <br /><br />
+                        </div>
+                        <div class="row col-sm-12 col-sm-offset-1">
+                            <form class="form-horizontal col-sm-8" name="myform">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <div class="mar-top15 text-center">
+                                            <div class="">
+                                                <textarea class="form-control" style="resize:none;" data-ng-model="inputCommentFrmPub.commentText" name="commentText" rows="2"
+                                                          data-rule="required" data-msg="Comment" placeholder="Comment"></textarea>
+                                                <br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <div class="col-sm-2">
+                                <a href="" tooltip-placement="bottom" tooltip="Save Comment" target="_blank" ng-click="addComment(publishedPlaylist,inputCommentFrmPub,myform)">
+                                    <span style="color:green;" class="glyphicon glyphicon-comment"></span>
+                                </a>
+                                <br /><br />
+                                <a class="clear" data-ng-click="inputCommentFrmPub = '' ">X</a>
+                            </div>
+                        </div>
+                        <div class="row col-sm-12" ng-repeat="comment in publishedPlaylist.comments | orderBy:'-addedOn'">
+                            <div class="col-sm-3">
+                                <span class="comment-name">{{comment.firstName}} {{comment.lastName}}</span>
+                            </div>
+                            <div class="col-sm-3">
+                                <span class="comment-date">{{ comment.addedOn | date : 'fullDate'}}</span>
+                            </div>
+                            <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id && editable==true && comment._id==commentId">
+                                <a href="" tooltip-placement="bottom" tooltip="Update Comment" target="_blank" ng-click="updateComment(publishedPlaylist,comment)">
+                                    <span style="color:green;" class="glyphicon glyphicon-ok"></span>
+                                </a>
+                            </div>
+                            <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id && editable!==true">
+                                <a href="" tooltip-placement="bottom" tooltip="Edit Comment" target="_blank" ng-click="editComment(publishedPlaylist,comment)">
+                                    <span style="color:blue;" class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                            </div>
+                            <div class="col-sm-1 pull-right" ng-show="comment.userId==currentUser._id">
+                                <a href="" tooltip-placement="bottom" tooltip="Delete Comment" target="_blank" ng-click="deleteComment(publishedPlaylist,comment)">
+                                    <span style="color:red;" class="glyphicon glyphicon-trash"></span>
+                                </a>
+                                <br />
+                            </div>
+                            <div class="col-sm-10" ng-hide="editable==true && comment._id==commentId">
+                                <div style="word-wrap:break-word;">{{comment.commentText}}</div>
+                                <br />
+                            </div>
+                            <div class="col-sm-10" ng-show="editable==true && comment._id==commentId">
+                                <form class="form-horizontal" ng-submit="updateComment(publishedPlaylist,comment)" name="myform">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <textarea class="form-control" style="resize:none;" ng-model="comment.commentText" name="commentText" rows="2"
+                                                      data-rule="required" data-msg="Comment" placeholder="Comment"></textarea>
+                                            <br />
+                                        </div>
+                                    </fieldset>
+                                </form>
+                                <br />
+                            </div>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="followers.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Followers</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row" ng-show="followers.length > 0">
+                <div class="col-sm-10 col-sm-offset-1 mar-top15">
+                    <ul class="list-group" ng-repeat="follower in followers | orderBy:'firstName'">
+                        <li class="list-group-item">
+                            <div>
+                                {{follower.firstName}} {{follower.lastName}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row" ng-show="followers.length <= 0">
+                <div class="col-sm-10 col-sm-offset-1 mar-top15">
+                    <label>Nobody is following this playlist.</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="playlistName.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Playlist Name</h3>
+        </div>
+        <div class="modal-body col-sm-12">
+            <div class="col-sm-12">
+                <input type="text" ng-model="playlistName" id="playlistNameToBeEdited"
+                       required class="text form-control margin" /><br />  
+            </div>
+            <div class="col-sm-10">
+                <button id="save" class="btn btn-success" ng-click="save(playlistName)">Save</button>
+                <button id="cancel" class="btn btn-warning" ng-click="cancel()">Cancel</button><br/>
+                
+            </div>  
+        </div>
+        <div class="modal-footer"/>
+
+    </script>
+
+</body>
+</html>

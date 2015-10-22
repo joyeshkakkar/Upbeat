@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Upbeat Home Page</title>
+</head>
+<body>
+    <div ng-app="app">
+        <div ng-controller="HomeController" id="slides_control">
+            <div class="row col-md-12">
+                <div class="col-md-10 col-md-offset-1">
+                    <carousel interval="myInterval">
+                        <slide ng-repeat="slide in slides" active="slide.active">
+                            <img ng-src="{{slide.image}}">
+                        </slide>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Upbeat</title>
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon"/> 
+    <link rel="stylesheet" href="css/styleSheet01.css" />    
+    <link rel="stylesheet" href="css/jquery-ui.css">
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.js"></script>    
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/ui-bootstrap-tpls-0.12.1.js"></script>
+    <!--Services-->
+    <script src="upbeat/upbeat.js"></script>
+    <script src="service/searchService.js"></script>
+    <script src="service/playlistService.js"></script>
+    <script src="service/userService.js"></script>
+    <script src="service/followerService.js"></script>
+    <!--Controllers-->
+    <script src="views/home/homeCtrl.js"></script>
+    <script src="views/signup/signupCtrl.js"></script>
+    <script src="views/login/loginCtrl.js"></script>
+    <script src="views/profile/profileCtrl.js"></script>
+    <script src="views/logout/logoutCtrl.js"></script>
+    <script src="views/search/searchCtrl.js"></script>
+    <script src="views/contact/contactCtrl.js"></script>
+    <script src="views/playlist/playlistCtrl.js"></script>
+   
+</head>
+<body style="padding-top:50px" ng-app="UpbeatApp">
+    <div class="container-fluid">
+        <div>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#/home">
+                            Upbeat
+                        </a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#/home">Home</a></li>
+                            <li><a href="#/about">About</a></li>
+                            <!--<li><a href="#/search">Search</a></li>-->
+                            <li ng-show="currentUser"><a href="#/profile">
+                                    <p ng-show="!currentUser">Profile</p>
+                                    <p ng-show="currentUser">{{currentUser.firstName}}'s Profile</p>
+                                </a>
+                            </li>
+                            <li ng-show="currentUser"><a href="#/playlist">Playlist</a></li>
+                            <li><a href="#/contact">Contact</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="currentUser"><a href="#/logout">Log Out</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="!currentUser"><a href="#/signup">Sign Up</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="!currentUser"><a href="#/login">Sign In</a></li>
+                        </ul>
+                    </div><!--/.navbar-collapse -->
+                </div>
+            </nav>
+        </div>
+        <div ng-view>
+        </div>
+    </div><!--Main div ends-->    
+</body>
+</html>

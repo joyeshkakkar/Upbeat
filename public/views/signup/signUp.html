@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Signup Page</title>
+</head>
+<body>
+    <div class="container" id="signupContainer">
+        <div class="row col-md-12">
+            <div class="col-md-6 col-md-offset-3">
+                <form class="form-horizontal" ng-submit="signup(user)" name="myform">
+                    <fieldset>
+                        <div class="form-group" ng-class="{'has-error': myform.username.$invalid}">
+                            <label for="username" class="margin col-lg-3 control-label">User Name&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="user.username" id="username" placeholder="Username"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+                        <p>
+                            <span ng-show="invalidUsername === true" class="label label-danger col-sm-offset-3 center-align">
+                                Username already exists. Please choose another username.<br />
+                            </span>
+                        </p>
+
+                        <div class="form-group" ng-class="{'has-error': myform.password.$invalid}">
+                            <label for="password" class="margin col-lg-3 control-label">Password&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="password" ng-model="user.password" id="password" placeholder="xxxxxxx"
+                                       required class="text form-control margin">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstName" class="margin col-lg-3 control-label" ng-class="{'has-error': myform.username.$invalid}">
+                                First Name&nbsp;&nbsp;*
+                            </label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="user.firstName" id="firstName" placeholder="First Name"
+                                       required class="text form-control margin">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName" class="margin col-lg-3 control-label" ng-class="{'has-error': myform.username.$invalid}">
+                                Last Name&nbsp;&nbsp;*
+                            </label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="user.lastName" id="lastName" placeholder="Last Name"
+                                       required class="text form-control margin">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="margin col-lg-3 control-label" ng-class="{'has-error': myform.username.$invalid}">
+                                Email&nbsp;&nbsp;*
+                            </label>
+                            <div class="col-lg-6">
+                                <input type="email" ng-model="user.email" id="email" placeholder="abc@domain.com"
+                                       required class="text form-control margin">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="margin col-lg-3 control-label">Phone</label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="user.phone" id="phone" placeholder="XXX-XXX-XXXX"
+                                       class="text form-control margin">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-3 col-sm-6 center-align">
+                            <button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="myForm.$invalid">
+                                Sign up
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

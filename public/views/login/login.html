@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <div class="row col-md-12">
+            <div class="col-md-6 col-md-offset-3">
+                <form class="form-horizontal" ng-submit="login(user)" name="myform">
+                    <fieldset>
+                        <div class="form-group" ng-class="{'has-error': myform.username.$invalid}">
+                            <label for="username" class="margin col-lg-3 control-label">User Name&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="text" ng-model="user.username" id="username" placeholder="Username"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-class="{'has-error': myform.password.$invalid}">
+                            <label for="password" class="margin col-lg-3 control-label">Password&nbsp;&nbsp;*</label>
+                            <div class="col-lg-6">
+                                <input type="password" ng-model="user.password" id="password" placeholder="xxxxxxx"
+                                       required class="text form-control margin" ng-change="change()">
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-3 center-align">
+                            <p>
+                                <span ng-show="invalid === true" class="label label-danger">
+                                    Invalid credentials provided. please try again.<br />
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-sm-offset-3 col-sm-6 center-align">
+                            <button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="myForm.$invalid">
+                                Sign in
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
